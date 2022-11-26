@@ -1,19 +1,26 @@
-import moment from "moment/moment"
-import {sum} from "./math"
+import App from "./App"
+import React from "react"
+
+import { createRoot } from 'react-dom/client';
+import { StyledEngineProvider } from '@mui/styled-engine';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+
 import "./index.scss"
 
-window.addEventListener('DOMContentLoaded', () =>{
-    sum(1, 2)
-    const getTodos = () => import('./api')
-    const el = document.querySelector('#root')
+const cache = createCache({
+  key: 'css',
+  prepend: true,
+});
 
-    el.innerHTML = `
-        <h2>1 + 2 = ${sum(1,2)}</h2>
-    `
-    const btn = document.getElementById('btn')
-    btn.addEventListener('click', () => {
-    getTodos().then(({ fetchTodos }) => {
-        fetchTodos().then(resp => console.log(resp))
-    })
-    })
+window.addEventListener('DOMContentLoaded', () => {
+    const rootElement = document.getElementById('root');
+    const root = createRoot(rootElement);
+    root.render(
+      <StyledEngineProvider injectFirst>
+        <CacheProvider value={cache}>
+          <App />
+        </CacheProvider>
+      </StyledEngineProvider>
+    );
 })
